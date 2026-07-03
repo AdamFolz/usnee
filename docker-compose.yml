@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: usnee
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: usnee
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usnee"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://usnee:${DB_PASSWORD}@postgres/usnee
+      REDIS_URL: redis://redis:6379
+      BOT_TOKEN: ${BOT_TOKEN}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+      WEBAPP_URL: ${WEBAPP_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    # Не открываем порт наружу — доступ через nginx
+
+  bot:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.bot
+    environment:
+      DATABASE_URL: postgresql+asyncpg://usnee:${DB_PASSWORD}@postgres/usnee
+      REDIS_URL: redis://redis:6379
+      BOT_TOKEN: ${BOT_TOKEN}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+      WEBAPP_URL: ${WEBAPP_URL}
+    depends_on:
+      - backend
+
+  nginx:
+    build: ./usnee-frontend
+    ports:
+      - "80:80"
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:

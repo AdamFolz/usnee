@@ -1,0 +1,61 @@
+name: Deploy SEKSOV
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+      
+      - name: Lint with ruff
+        run: |
+          pip install ruff
+          ruff check backend/
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build backend image
+        run: |
+          cd backend
+          docker build -t sekov-backend:latest .
+      
+      - name: Build bot image
+        run: |
+          cd backend
+          docker build -f Dockerfile.bot -t sekov-bot:latest .
+      
+      - name: Build frontend image
+        run: |
+          cd sekov-frontend
+          docker build -t sekov-frontend:latest .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to server
+        run: |
+          echo "Deploy steps here..."
+          # ssh user@server "cd /opt/sekov && docker-compose pull && docker-compose up -d"

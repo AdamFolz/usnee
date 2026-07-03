@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    @apply bg-gradient-to-b from-usnee-900 via-usnee-800 to-usnee-900 text-white min-h-screen;
+    overscroll-behavior-y: none;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  }
+  
+  .glass-strong {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-usnee-400 to-pink-400 bg-clip-text text-transparent;
+  }
+  
+  .btn-primary {
+    @apply w-full py-4 bg-gradient-to-r from-usnee-500 to-pink-600 rounded-2xl font-bold text-lg
+           disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]
+           transition-transform duration-150;
+  }
+}
