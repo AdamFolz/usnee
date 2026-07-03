@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request
 sys.path.append('/app')
 
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message, Update, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, Update, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.filters import Command
 
 from app.core.config import settings
@@ -26,7 +26,7 @@ async def cmd_start(message: Message):
             [
                 InlineKeyboardButton(
                     text="🚀 Открыть USNEE",
-                    web_app={"url": settings.webapp_url},
+                    web_app=WebAppInfo(url=settings.webapp_url),
                 )
             ]
         ]
@@ -62,7 +62,7 @@ async def cmd_stats(message: Message):
 
 async def setup_webhook():
     """Установить Telegram webhook при старте"""
-    webhook_url = f"{settings.webapp_url}/api/telegram/webhook"
+    webhook_url = f"{settings.webhook_url}/api/telegram/webhook"
     try:
         await bot.set_webhook(url=webhook_url)
         logger.info(f"Webhook set to {webhook_url}")
@@ -84,6 +84,6 @@ async def shutdown_webhook():
 async def telegram_webhook(request: Request):
     """Получать обновления от Telegram"""
     data = await request.json()
-    update = Update.model_validate(data)
+    update = Update(**data)
     await dp.feed_update(bot=bot, update=update)
     return {"ok": True}

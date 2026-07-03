@@ -4,7 +4,7 @@ import sys
 sys.path.append('/app')
 
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, WebAppInfo
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
 
@@ -24,7 +24,7 @@ async def cmd_start(message: Message):
             [
                 InlineKeyboardButton(
                     text="🚀 Открыть USNEE",
-                    web_app={"url": settings.webapp_url},
+                    web_app=WebAppInfo(url=settings.webapp_url),
                 )
             ]
         ]

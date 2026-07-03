@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, update
+from sqlalchemy import select, func, and_, update, case
 from typing import Optional
 from datetime import datetime, timedelta
 import logging
@@ -58,7 +58,10 @@ async def create_injection(
                 .values(
                     remaining_amount=Batch.remaining_amount - data.volume_ml,
                     is_finished=(Batch.remaining_amount - data.volume_ml) <= 0,
-                    finished_at=func.now() if (Batch.remaining_amount - data.volume_ml) <= 0 else Batch.finished_at,
+                    finished_at=case(
+                        (Batch.remaining_amount - data.volume_ml <= 0, func.now()),
+                        else_=Batch.finished_at,
+                    ),
                 )
                 .returning(Batch.id)
             )

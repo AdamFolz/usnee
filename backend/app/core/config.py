@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     # Настройки
     admin_ids: List[int] = []
     webapp_url: str = "https://usnee.app/miniapp"
+    webhook_url: str = "https://usnee.app/miniapp"
     
     # Rate limiting (только для защиты сервера)
     rate_limit_requests: int = 10
