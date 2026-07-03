@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const el = document.elementFromPoint(290, 85); const event = new MouseEvent('click', { view: window, bubbles: true, cancelable: true, clientX: 290, clientY: 85 }); el.dispatchEvent(event); return 'dispatched click to ' + el.tagName; })()"},"session":"usnee-deploy"}

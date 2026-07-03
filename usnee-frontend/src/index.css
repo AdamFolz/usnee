@@ -17,75 +17,103 @@
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #0f0f0f;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #2d2d2d;
+    background: rgba(255,255,255,0.15);
     border-radius: 9999px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #8e8e93;
   }
 }
 
 @layer components {
-  /* Card — основной элемент интерфейса */
+  /* Apple-style Glass Card */
+  .glass {
+    background: rgba(28, 28, 30, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1.25rem;
+  }
+
+  .glass-light {
+    background: rgba(44, 44, 46, 0.60);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 1.25rem;
+  }
+
+  .glass-strong {
+    background: rgba(28, 28, 30, 0.85);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1.25rem;
+  }
+
+  /* Card — modern glass variant */
   .card {
-    background-color: #1c1c1c;
-    border: 1px solid #2d2d2d;
-    border-radius: 1rem;
+    background: rgba(28, 28, 30, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1.25rem;
     padding: 1rem;
   }
 
   .card-hover {
-    transition: all 0.15s ease;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .card-hover:hover {
-    border-color: #38383a;
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-1px);
   }
   .card-hover:active {
     transform: scale(0.98);
   }
 
-  /* Primary button — основное действие */
+  /* Primary button — iOS style */
   .btn-primary {
-    background-color: #007aff;
+    background: linear-gradient(180deg, #0a84ff 0%, #0071e3 100%);
     color: #ffffff;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.75rem;
+    font-weight: 600;
+    padding: 0.875rem 1.5rem;
+    border-radius: 1rem;
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    box-shadow: 0 1px 3px rgba(10, 132, 255, 0.3);
   }
   .btn-primary:hover {
-    background-color: #0056b3;
+    background: linear-gradient(180deg, #1a8cff 0%, #0a84ff 100%);
+    box-shadow: 0 2px 8px rgba(10, 132, 255, 0.4);
   }
   .btn-primary:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
+    box-shadow: 0 1px 2px rgba(10, 132, 255, 0.2);
   }
   .btn-primary:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
-  /* Secondary button — дополнительное действие */
+  /* Secondary button */
   .btn-secondary {
-    background-color: #1c1c1c;
+    background: rgba(44, 44, 46, 0.60);
+    backdrop-filter: blur(12px);
     color: #ffffff;
     font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #2d2d2d;
+    padding: 0.875rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
@@ -93,24 +121,21 @@
     gap: 0.5rem;
   }
   .btn-secondary:hover {
-    background-color: #2d2d2d;
+    background: rgba(58, 58, 60, 0.70);
+    border-color: rgba(255,255,255,0.12);
   }
   .btn-secondary:active {
-    transform: scale(0.95);
-  }
-  .btn-secondary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    transform: scale(0.96);
   }
 
-  /* Danger button — деструктивное действие */
+  /* Danger button */
   .btn-danger {
-    background-color: rgba(255, 59, 48, 0.1);
-    color: #ff3b30;
+    background: rgba(255, 69, 58, 0.12);
+    color: #ff453a;
     font-weight: 500;
-    padding: 0.625rem 1rem;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 59, 48, 0.2);
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 69, 58, 0.2);
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
@@ -118,21 +143,18 @@
     gap: 0.5rem;
   }
   .btn-danger:hover {
-    background-color: rgba(255, 59, 48, 0.2);
-  }
-  .btn-danger:active {
-    transform: scale(0.95);
+    background: rgba(255, 69, 58, 0.2);
   }
 
-  /* Input — поля ввода */
+  /* Input — glass style */
   .input {
     width: 100%;
-    background-color: #0f0f0f;
-    border: 1px solid #2d2d2d;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 0.875rem;
+    padding: 0.875rem 1rem;
     color: #ffffff;
-    transition: border-color 0.15s ease;
+    transition: all 0.2s ease;
     font-size: 1rem;
   }
   .input::placeholder {
@@ -140,59 +162,77 @@
   }
   .input:focus {
     outline: none;
-    border-color: #007aff;
+    border-color: #0a84ff;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15);
   }
 
-  /* Skeleton — плейсхолдер загрузки */
+  /* Skeleton */
   .skeleton {
-    background-color: #2d2d2d;
-    border-radius: 0.25rem;
-    animation: skeleton 1.5s ease-in-out infinite;
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%);
+    background-size: 200% 100%;
+    border-radius: 0.5rem;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
   }
 
-  /* Glass — эффект матового стекла (сохранён для совместимости) */
-  .glass {
-    background-color: #1c1c1c;
-    border: 1px solid #2d2d2d;
-    border-radius: 1rem;
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
-  .glass-strong {
-    background-color: #1c1c1c;
-    border: 1px solid #38383a;
-    border-radius: 1rem;
-  }
-
-  /* Text gradient — сохранён для совместимости */
+  /* Text gradient */
   .text-gradient {
-    background: linear-gradient(90deg, #007aff, #a855f7);
+    background: linear-gradient(135deg, #0a84ff, #a855f7);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Section title */
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  /* Label */
+  .label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #8e8e93;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 }
 
 @layer utilities {
-  /* Safe area для iPhone */
   .safe-bottom {
-    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
   }
 
   .safe-top {
-    padding-top: max(env(safe-area-inset-top), 16px);
+    padding-top: max(env(safe-area-inset-top), 20px);
   }
 
-  .safe-x {
-    padding-left: max(env(safe-area-inset-left), 16px);
-    padding-right: max(env(safe-area-inset-right), 16px);
-  }
-
-  /* Скрытие скроллбара */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Glass utilities */
+  .bg-glass {
+    background: rgba(28, 28, 30, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+  }
+
+  .bg-glass-light {
+    background: rgba(44, 44, 46, 0.60);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Syringe, History, Settings, Home, Wind } from 'lucide-react';
-import type { TriggerCode, InjectionMethod, InjectionSite } from '@/types';
+import { Syringe, History, Settings, Home, Wind, User } from 'lucide-react';
+import type { TriggerCode, InjectionMethod, InjectionSite, Injection } from '@/types';
 import { useStore } from '@/stores/appStore';
 import { StatsCard } from '@/components/StatsCard';
 import { TriggerSelector } from '@/components/TriggerSelector';
@@ -21,9 +21,13 @@ import { ExportData } from '@/pages/ExportData';
 import { Faq } from '@/pages/Faq';
 import { Support } from '@/pages/Support';
 import { NotificationSettings } from '@/pages/NotificationSettings';
+import { ProfilePage } from '@/pages/ProfilePage';
+import { CalendarView } from '@/pages/CalendarView';
+import { Onboarding } from '@/pages/Onboarding';
+import { InjectionDetail } from '@/pages/InjectionDetail';
 
 type Tab = 'home' | 'history' | 'settings';
-type Page = Tab | 'safety' | 'stats' | 'achievements' | 'export' | 'faq' | 'support' | 'notifications';
+type Page = Tab | 'safety' | 'stats' | 'achievements' | 'export' | 'faq' | 'support' | 'notifications' | 'profile' | 'calendar' | 'onboarding' | 'injection_detail';
 
 const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
   { key: 'home', label: 'Главная', icon: Home },
@@ -48,7 +52,6 @@ const SITES: { code: InjectionSite; label: string }[] = [
   { code: 'other', label: 'Другое' },
 ];
 
-// All possible achievements
 const ALL_ACHIEVEMENTS = [
   { code: 'first_log', title: 'Первый шаг', description: 'Первая запись в дневнике', icon: '📝', category: 'neutral' as const, xp_reward: 10 },
   { code: '24h_interval', title: '24 часа', description: 'Соблюдён 24-часовой интервал', icon: '⏰', category: 'positive' as const, xp_reward: 25 },
@@ -70,6 +73,10 @@ export const App: React.FC = () => {
   const [note, setNote] = useState('');
   const [showBreathing, setShowBreathing] = useState(false);
   const [showRecordConfirm, setShowRecordConfirm] = useState(false);
+  const [selectedInjection, setSelectedInjection] = useState<Injection | null>(null);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => {
+    return localStorage.getItem('usnee_onboarding_seen') === 'true';
+  });
 
   const {
     user,
@@ -123,12 +130,14 @@ export const App: React.FC = () => {
 
   const canRecord = selectedTrigger && parseFloat(volume) > 0;
 
-  // Navigation helpers
   const goTo = (p: Page) => setPage(p);
   const goBack = () => {
-    if (page === 'safety' || page === 'stats' || page === 'achievements') {
+    if (page === 'injection_detail') {
+      setPage('history');
+      setSelectedInjection(null);
+    } else if (['safety', 'stats', 'achievements', 'profile', 'calendar'].includes(page)) {
       setPage('home');
-    } else if (page === 'export' || page === 'faq' || page === 'support' || page === 'notifications') {
+    } else if (['export', 'faq', 'support', 'notifications'].includes(page)) {
       setPage('settings');
     } else {
       setPage('home');
@@ -140,7 +149,22 @@ export const App: React.FC = () => {
     setPage(tab);
   };
 
-  // Page content renderer
+  const handleInjectionClick = (injection: Injection) => {
+    setSelectedInjection(injection);
+    setPage('injection_detail');
+  };
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('usnee_onboarding_seen', 'true');
+    setHasSeenOnboarding(true);
+    setPage('home');
+  };
+
+  // Show onboarding on first visit
+  if (!hasSeenOnboarding) {
+    return <Onboarding onComplete={handleOnboardingComplete} />;
+  }
+
   const renderPage = () => {
     switch (page) {
       case 'safety':
@@ -163,6 +187,26 @@ export const App: React.FC = () => {
         return <Support onBack={goBack} />;
       case 'notifications':
         return <NotificationSettings onBack={goBack} />;
+      case 'profile':
+        return (
+          <ProfilePage
+            user={user}
+            stats={stats}
+            onBack={goBack}
+            onEdit={() => {}}
+            onAchievements={() => goTo('achievements')}
+          />
+        );
+      case 'calendar':
+        return <CalendarView onBack={goBack} />;
+      case 'injection_detail':
+        return (
+          <InjectionDetail
+            injection={selectedInjection}
+            onBack={goBack}
+            onCancel={(id) => { console.log('cancel', id); }}
+          />
+        );
       default:
         return null;
     }
@@ -198,63 +242,80 @@ export const App: React.FC = () => {
       {/* Tab pages */}
       {isTabPage && (
         <>
-          {/* Header */}
-          <header className="p-6 text-center">
-            <h1 className="text-3xl font-bold text-gradient">USNEE</h1>
-            <p className="text-tg-text-secondary mt-2 text-sm">Без осуждения, только факты</p>
-            {user && (
-              <p className="text-tg-text-tertiary text-xs mt-1">
-                {user.first_name || 'Аноним'} · Уровень {user.level}
-              </p>
-            )}
+          {/* Glass Header */}
+          <header className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-tg-primary/10 to-transparent" />
+            <div className="relative p-6 text-center pt-8">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-gradient">USNEE</h1>
+              </div>
+              <p className="text-tg-text-secondary text-sm">Без осуждения, только факты</p>
+              {user && (
+                <button
+                  onClick={() => goTo('profile')}
+                  className="mt-3 inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-sm text-tg-text-secondary hover:text-tg-text transition-colors"
+                >
+                  <User size={16} />
+                  {user.first_name || 'Аноним'} · Уровень {user.level}
+                </button>
+              )}
+            </div>
           </header>
 
           <AnimatePresence mode="wait">
             {page === 'home' && (
               <motion.div
                 key="home"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-5"
               >
                 <StatsCard stats={stats} />
 
-                {/* Quick links */}
-                <div className="px-4 flex gap-3">
-                  <button onClick={() => goTo('safety')} className="flex-1 card card-hover text-center py-3">
-                    <span className="text-2xl mb-1 block">🛡️</span>
-                    <span className="text-sm text-tg-text-secondary">Безопасность</span>
-                  </button>
-                  <button onClick={() => goTo('stats')} className="flex-1 card card-hover text-center py-3">
-                    <span className="text-2xl mb-1 block">📊</span>
-                    <span className="text-sm text-tg-text-secondary">Статистика</span>
-                  </button>
-                  <button onClick={() => goTo('achievements')} className="flex-1 card card-hover text-center py-3">
-                    <span className="text-2xl mb-1 block">🏅</span>
-                    <span className="text-sm text-tg-text-secondary">Ачивки</span>
-                  </button>
+                {/* Quick links - glass style */}
+                <div className="px-4">
+                  <p className="label mb-3 px-1">Быстрый доступ</p>
+                  <div className="grid grid-cols-4 gap-2">
+                    <button onClick={() => goTo('safety')} className="glass p-3 text-center card-hover">
+                      <span className="text-2xl mb-1 block">🛡️</span>
+                      <span className="text-xs text-tg-text-secondary">Гид</span>
+                    </button>
+                    <button onClick={() => goTo('stats')} className="glass p-3 text-center card-hover">
+                      <span className="text-2xl mb-1 block">📊</span>
+                      <span className="text-xs text-tg-text-secondary">Стат.</span>
+                    </button>
+                    <button onClick={() => goTo('calendar')} className="glass p-3 text-center card-hover">
+                      <span className="text-2xl mb-1 block">📅</span>
+                      <span className="text-xs text-tg-text-secondary">Кален.</span>
+                    </button>
+                    <button onClick={() => goTo('achievements')} className="glass p-3 text-center card-hover">
+                      <span className="text-2xl mb-1 block">🏅</span>
+                      <span className="text-xs text-tg-text-secondary">Ачивки</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Trigger Selection */}
                 <div>
-                  <h2 className="text-center text-tg-text-secondary mb-2">Что спровоцировало?</h2>
+                  <p className="label mb-3 px-5">Что спровоцировало?</p>
                   <TriggerSelector selected={selectedTrigger} onSelect={setSelectedTrigger} />
                 </div>
 
-                {/* Method & Site */}
-                <div className="mx-4 card space-y-4">
+                {/* Method & Site - glass form */}
+                <div className="mx-4 glass space-y-4 p-4">
                   <div>
-                    <p className="text-tg-text-secondary text-sm mb-2">Способ</p>
+                    <p className="label mb-2">Способ</p>
                     <div className="flex gap-2">
                       {METHODS.map((m) => (
                         <button
                           key={m.code}
                           onClick={() => setMethod(m.code)}
-                          className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+                          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                             method === m.code
-                              ? 'bg-tg-primary text-white'
-                              : 'bg-tg-bg-secondary text-tg-text-secondary hover:bg-tg-separator'
+                              ? 'bg-tg-primary text-white shadow-lg shadow-tg-primary/25'
+                              : 'bg-tg-bg-secondary/50 text-tg-text-secondary hover:bg-tg-bg-secondary'
                           }`}
                         >
                           {m.label}
@@ -264,16 +325,16 @@ export const App: React.FC = () => {
                   </div>
 
                   <div>
-                    <p className="text-tg-text-secondary text-sm mb-2">Место</p>
+                    <p className="label mb-2">Место</p>
                     <div className="grid grid-cols-4 gap-2">
                       {SITES.map((s) => (
                         <button
                           key={s.code}
                           onClick={() => setSite(s.code)}
-                          className={`py-2 rounded-xl text-xs font-medium transition-colors ${
+                          className={`py-2 rounded-xl text-xs font-medium transition-all ${
                             site === s.code
-                              ? 'bg-tg-primary/80 text-white'
-                              : 'bg-tg-bg-secondary text-tg-text-secondary hover:bg-tg-separator'
+                              ? 'bg-tg-primary/80 text-white shadow-md'
+                              : 'bg-tg-bg-secondary/50 text-tg-text-secondary hover:bg-tg-bg-secondary'
                           }`}
                         >
                           {s.label}
@@ -283,7 +344,7 @@ export const App: React.FC = () => {
                   </div>
 
                   <div>
-                    <p className="text-tg-text-secondary text-sm mb-2">Объём (мл)</p>
+                    <p className="label mb-2">Объём (мл)</p>
                     <input
                       type="number"
                       step="0.1"
@@ -295,7 +356,7 @@ export const App: React.FC = () => {
                   </div>
 
                   <div>
-                    <p className="text-tg-text-secondary text-sm mb-2">Заметка (опционально)</p>
+                    <p className="label mb-2">Заметка (опционально)</p>
                     <textarea
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
@@ -308,24 +369,26 @@ export const App: React.FC = () => {
 
                 {/* Actions */}
                 <div className="px-6 space-y-3">
-                  <button
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => canRecord && setShowRecordConfirm(true)}
                     disabled={!canRecord || isLoading}
                     className="btn-primary w-full flex items-center justify-center gap-2"
                   >
                     <Syringe size={20} />
                     {isLoading ? 'Запись...' : '💉 Записать'}
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setShowBreathing(true)}
                     className="btn-secondary w-full"
                   >
                     <Wind size={18} />
                     Дыхательное упражнение
-                  </button>
+                  </motion.button>
 
-                  <p className="text-center text-tg-text-tertiary text-sm">
+                  <p className="text-center text-tg-text-tertiary text-sm pt-2">
                     Мы не судим, мы рядом 💜
                   </p>
                 </div>
@@ -333,7 +396,7 @@ export const App: React.FC = () => {
                 {/* Recent Achievements */}
                 {user && user.recent_achievements?.length > 0 && (
                   <div className="px-4 pb-6">
-                    <h3 className="text-tg-text-secondary text-sm mb-3">Последние ачивки</h3>
+                    <p className="label mb-3">Последние ачивки</p>
                     <div className="space-y-2">
                       {user.recent_achievements.slice(0, 3).map((ach) => (
                         <IronicBadge key={ach.code} achievement={ach} />
@@ -347,9 +410,10 @@ export const App: React.FC = () => {
             {page === 'history' && (
               <motion.div
                 key="history"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
               >
                 <h2 className="text-xl font-bold text-tg-text px-6 mb-4">История</h2>
                 <HistoryList
@@ -357,6 +421,7 @@ export const App: React.FC = () => {
                   hasMore={hasMore}
                   onLoadMore={loadMoreHistory}
                   isLoading={isLoading}
+                  onItemClick={handleInjectionClick}
                 />
               </motion.div>
             )}
@@ -364,9 +429,10 @@ export const App: React.FC = () => {
             {page === 'settings' && (
               <motion.div
                 key="settings"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
               >
                 <SettingsPage
                   onBack={() => handleTabChange('home')}
@@ -376,23 +442,24 @@ export const App: React.FC = () => {
             )}
           </AnimatePresence>
 
-          {/* Bottom Navigation */}
-          <nav className="fixed bottom-0 left-0 right-0 z-40 bg-tg-bg/90 backdrop-blur-lg border-t border-tg-separator">
+          {/* Bottom Navigation - glass */}
+          <nav className="fixed bottom-0 left-0 right-0 z-40 bg-tg-bg-glass/80 backdrop-blur-xl border-t border-tg-separator">
             <div className="flex justify-around py-2 safe-bottom">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.key;
                 return (
-                  <button
+                  <motion.button
                     key={tab.key}
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => handleTabChange(tab.key)}
                     className={`flex flex-col items-center py-2 px-6 rounded-2xl transition-colors ${
                       isActive ? 'text-tg-primary' : 'text-tg-text-tertiary'
                     }`}
                   >
                     <Icon size={24} />
-                    <span className="text-xs mt-1">{tab.label}</span>
-                  </button>
+                    <span className="text-xs mt-1 font-medium">{tab.label}</span>
+                  </motion.button>
                 );
               })}
             </div>
@@ -400,7 +467,7 @@ export const App: React.FC = () => {
         </>
       )}
 
-      {/* Record Confirmation Modal */}
+      {/* Record Confirmation Modal - glass */}
       <AnimatePresence>
         {showRecordConfirm && (
           <motion.div
@@ -415,15 +482,15 @@ export const App: React.FC = () => {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="card w-full max-w-sm text-center"
+              className="glass w-full max-w-sm text-center p-6"
               onClick={(e) => e.stopPropagation()}
             >
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-tg-primary to-usnee-500 flex items-center justify-center">
+                <Syringe size={28} className="text-white" />
+              </div>
+              <p className="text-tg-text font-semibold text-lg mb-2">Записать инъекцию?</p>
               <p className="text-tg-text-secondary mb-6">
-                Записать инъекцию?
-                <br />
-                <span className="text-sm text-tg-text-tertiary">
-                  {METHODS.find((m) => m.code === method)?.label} · {volume} мл · {SITES.find((s) => s.code === site)?.label}
-                </span>
+                {METHODS.find((m) => m.code === method)?.label} · {volume} мл · {SITES.find((s) => s.code === site)?.label}
               </p>
               <div className="flex gap-3">
                 <button
