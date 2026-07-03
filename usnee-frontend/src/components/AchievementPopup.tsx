@@ -29,10 +29,10 @@ export const AchievementPopup: React.FC<Props> = ({ achievement, visible, onDism
             className="w-full max-w-sm"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="glass-strong rounded-3xl p-6 text-center">
+            <div className="card text-center relative">
               <button
                 onClick={onDismiss}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                className="absolute top-4 right-4 text-tg-text-secondary hover:text-tg-text transition-colors"
               >
                 <X size={20} />
               </button>

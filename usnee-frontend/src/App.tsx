@@ -104,7 +104,7 @@ export const App: React.FC = () => {
   const canRecord = selectedTrigger && parseFloat(volume) > 0;
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 bg-tg-bg">
       <ErrorToast message={error} onDismiss={clearError} />
       <AchievementPopup
         achievement={lastAchievement}
@@ -117,9 +117,9 @@ export const App: React.FC = () => {
       {/* Header */}
       <header className="p-6 text-center">
         <h1 className="text-3xl font-bold text-gradient">USNEE</h1>
-        <p className="text-gray-400 mt-2 text-sm">Без осуждения, только факты</p>
+        <p className="text-tg-text-secondary mt-2 text-sm">Без осуждения, только факты</p>
         {user && (
-          <p className="text-gray-500 text-xs mt-1">
+          <p className="text-tg-text-tertiary text-xs mt-1">
             {user.first_name || 'Аноним'} · Уровень {user.level}
           </p>
         )}
@@ -138,14 +138,14 @@ export const App: React.FC = () => {
 
             {/* Trigger Selection */}
             <div>
-              <h2 className="text-center text-gray-300 mb-2">Что спровоцировало?</h2>
+              <h2 className="text-center text-tg-text-secondary mb-2">Что спровоцировало?</h2>
               <TriggerSelector selected={selectedTrigger} onSelect={setSelectedTrigger} />
             </div>
 
             {/* Method & Site */}
-            <div className="mx-4 glass rounded-2xl p-4 space-y-4">
+            <div className="mx-4 card space-y-4">
               <div>
-                <p className="text-gray-400 text-sm mb-2">Способ</p>
+                <p className="text-tg-text-secondary text-sm mb-2">Способ</p>
                 <div className="flex gap-2">
                   {METHODS.map((m) => (
                     <button
@@ -153,8 +153,8 @@ export const App: React.FC = () => {
                       onClick={() => setMethod(m.code)}
                       className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
                         method === m.code
-                          ? 'bg-usnee-500 text-white'
-                          : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                          ? 'bg-tg-primary text-white'
+                          : 'bg-tg-bg-secondary text-tg-text-secondary hover:bg-tg-separator'
                       }`}
                     >
                       {m.label}
@@ -164,7 +164,7 @@ export const App: React.FC = () => {
               </div>
 
               <div>
-                <p className="text-gray-400 text-sm mb-2">Место</p>
+                <p className="text-tg-text-secondary text-sm mb-2">Место</p>
                 <div className="grid grid-cols-4 gap-2">
                   {SITES.map((s) => (
                     <button
@@ -172,8 +172,8 @@ export const App: React.FC = () => {
                       onClick={() => setSite(s.code)}
                       className={`py-2 rounded-xl text-xs font-medium transition-colors ${
                         site === s.code
-                          ? 'bg-pink-500/80 text-white'
-                          : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                          ? 'bg-tg-primary/80 text-white'
+                          : 'bg-tg-bg-secondary text-tg-text-secondary hover:bg-tg-separator'
                       }`}
                     >
                       {s.label}
@@ -183,25 +183,25 @@ export const App: React.FC = () => {
               </div>
 
               <div>
-                <p className="text-gray-400 text-sm mb-2">Объём (мл)</p>
+                <p className="text-tg-text-secondary text-sm mb-2">Объём (мл)</p>
                 <input
                   type="number"
                   step="0.1"
                   min="0.1"
                   value={volume}
                   onChange={(e) => setVolume(e.target.value)}
-                  className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-usnee-400 focus:outline-none"
+                  className="input"
                 />
               </div>
 
               <div>
-                <p className="text-gray-400 text-sm mb-2">Заметка (опционально)</p>
+                <p className="text-tg-text-secondary text-sm mb-2">Заметка (опционально)</p>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Что чувствовал..."
                   rows={2}
-                  className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-usnee-400 focus:outline-none resize-none text-sm"
+                  className="input resize-none text-sm"
                 />
               </div>
             </div>
@@ -211,7 +211,7 @@ export const App: React.FC = () => {
               <button
                 onClick={() => canRecord && setShowRecordConfirm(true)}
                 disabled={!canRecord || isLoading}
-                className="btn-primary flex items-center justify-center gap-2"
+                className="btn-primary w-full flex items-center justify-center gap-2"
               >
                 <Syringe size={20} />
                 {isLoading ? 'Запись...' : '💉 Записать'}
@@ -219,13 +219,13 @@ export const App: React.FC = () => {
 
               <button
                 onClick={() => setShowBreathing(true)}
-                className="w-full py-3 bg-white/5 rounded-2xl font-medium text-gray-300 hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+                className="btn-secondary w-full"
               >
                 <Wind size={18} />
                 Дыхательное упражнение
               </button>
 
-              <p className="text-center text-gray-500 text-sm">
+              <p className="text-center text-tg-text-tertiary text-sm">
                 Мы не судим, мы рядом 💜
               </p>
             </div>
@@ -233,7 +233,7 @@ export const App: React.FC = () => {
             {/* Recent Achievements */}
             {user && user.recent_achievements?.length > 0 && (
               <div className="px-4 pb-6">
-                <h3 className="text-gray-400 text-sm mb-3">Последние ачивки</h3>
+                <h3 className="text-tg-text-secondary text-sm mb-3">Последние ачивки</h3>
                 <div className="space-y-2">
                   {user.recent_achievements.slice(0, 3).map((ach) => (
                     <IronicBadge key={ach.code} achievement={ach} />
@@ -251,7 +251,7 @@ export const App: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
           >
-            <h2 className="text-xl font-bold text-white px-6 mb-4">История</h2>
+            <h2 className="text-xl font-bold text-tg-text px-6 mb-4">История</h2>
             <HistoryList
               history={history}
               hasMore={hasMore}
@@ -269,28 +269,28 @@ export const App: React.FC = () => {
             exit={{ opacity: 0, x: 20 }}
             className="px-6 space-y-4"
           >
-            <h2 className="text-xl font-bold text-white mb-4">Настройки</h2>
+            <h2 className="text-xl font-bold text-tg-text mb-4">Настройки</h2>
 
-            <div className="glass rounded-2xl p-4">
-              <h3 className="font-semibold text-white mb-2">О приложении</h3>
-              <p className="text-gray-400 text-sm">
+            <div className="card">
+              <h3 className="font-semibold text-tg-text mb-2">О приложении</h3>
+              <p className="text-tg-text-secondary text-sm">
                 USNEE — инструмент harm reduction. Мы не заменяем медицинскую помощь и не даём оценок.
               </p>
             </div>
 
-            <div className="glass rounded-2xl p-4">
-              <h3 className="font-semibold text-white mb-2">Конфиденциальность</h3>
-              <p className="text-gray-400 text-sm">
+            <div className="card">
+              <h3 className="font-semibold text-tg-text mb-2">Конфиденциальность</h3>
+              <p className="text-tg-text-secondary text-sm">
                 Все данные шифруются. Никаких следов в Telegram.
               </p>
             </div>
 
-            <div className="glass rounded-2xl p-4">
-              <h3 className="font-semibold text-white mb-2">Экстренная помощь</h3>
-              <p className="text-gray-400 text-sm mb-3">
+            <div className="card">
+              <h3 className="font-semibold text-tg-text mb-2">Экстренная помощь</h3>
+              <p className="text-tg-text-secondary text-sm mb-3">
                 Если ты чувствуешь, что плохо — нажми красную кнопку в правом нижнем углу.
               </p>
-              <div className="flex items-center gap-2 text-red-400 text-sm">
+              <div className="flex items-center gap-2 text-tg-danger text-sm">
                 <Heart size={16} />
                 <span>Ты не один. Мы рядом.</span>
               </div>
@@ -300,8 +300,8 @@ export const App: React.FC = () => {
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-usnee-900/90 backdrop-blur-lg border-t border-white/10">
-        <div className="flex justify-around py-2">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-tg-bg/90 backdrop-blur-lg border-t border-tg-separator">
+        <div className="flex justify-around py-2 safe-bottom">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
@@ -310,7 +310,7 @@ export const App: React.FC = () => {
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex flex-col items-center py-2 px-6 rounded-2xl transition-colors ${
-                  isActive ? 'text-usnee-400' : 'text-gray-500'
+                  isActive ? 'text-tg-primary' : 'text-tg-text-tertiary'
                 }`}
               >
                 <Icon size={24} />
@@ -332,30 +332,31 @@ export const App: React.FC = () => {
             onClick={() => setShowRecordConfirm(false)}
           >
             <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="bg-usnee-800 rounded-3xl p-6 w-full max-w-sm text-center"
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="card w-full max-w-sm text-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <p className="text-gray-300 mb-6">
+              <p className="text-tg-text-secondary mb-6">
                 Записать инъекцию?
                 <br />
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-tg-text-tertiary">
                   {METHODS.find((m) => m.code === method)?.label} · {volume} мл · {SITES.find((s) => s.code === site)?.label}
                 </span>
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowRecordConfirm(false)}
-                  className="flex-1 py-3 bg-white/5 rounded-2xl text-gray-300 hover:bg-white/10"
+                  className="btn-secondary flex-1"
                 >
                   Отмена
                 </button>
                 <button
                   onClick={handleRecord}
                   disabled={isLoading}
-                  className="flex-1 py-3 bg-usnee-500 rounded-2xl text-white font-bold hover:bg-usnee-400 disabled:opacity-50"
+                  className="btn-primary flex-1"
                 >
                   {isLoading ? '...' : 'Записать'}
                 </button>

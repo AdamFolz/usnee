@@ -17,9 +17,41 @@ export default {
           300: '#c084fc',
           100: '#e9d5ff',
         },
+        // Telegram / Base44 design system colors
+        tg: {
+          text: '#ffffff',
+          'text-secondary': '#8e8e93',
+          'text-tertiary': '#636366',
+          bg: '#0f0f0f',
+          'bg-elevated': '#1c1c1c',
+          'bg-secondary': '#2d2d2d',
+          primary: '#007aff',
+          'primary-foreground': '#ffffff',
+          success: '#34c759',
+          'success-foreground': '#ffffff',
+          danger: '#ff3b30',
+          'danger-foreground': '#ffffff',
+          warning: '#ff9500',
+          'warning-foreground': '#ffffff',
+          separator: '#38383a',
+          overlay: 'rgba(0,0,0,0.6)',
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      borderRadius: {
+        'card': '1rem',
+        'button': '0.75rem',
+      },
+      animation: {
+        'skeleton': 'skeleton 1.5s ease-in-out infinite',
+      },
+      keyframes: {
+        skeleton: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' },
+        },
       },
     },
   },

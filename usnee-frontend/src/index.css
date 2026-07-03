@@ -4,32 +4,195 @@
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
-  
+
   body {
-    @apply bg-gradient-to-b from-usnee-900 via-usnee-800 to-usnee-900 text-white min-h-screen;
+    background-color: #0f0f0f;
+    color: #ffffff;
+    min-height: 100vh;
     overscroll-behavior-y: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f0f0f;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2d2d2d;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8e8e93;
+  }
+}
+
+@layer components {
+  /* Card — основной элемент интерфейса */
+  .card {
+    background-color: #1c1c1c;
+    border: 1px solid #2d2d2d;
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .card-hover {
+    transition: all 0.15s ease;
+  }
+  .card-hover:hover {
+    border-color: #38383a;
+  }
+  .card-hover:active {
+    transform: scale(0.98);
+  }
+
+  /* Primary button — основное действие */
+  .btn-primary {
+    background-color: #007aff;
+    color: #ffffff;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  .btn-primary:active {
+    transform: scale(0.95);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Secondary button — дополнительное действие */
+  .btn-secondary {
+    background-color: #1c1c1c;
+    color: #ffffff;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #2d2d2d;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .btn-secondary:hover {
+    background-color: #2d2d2d;
+  }
+  .btn-secondary:active {
+    transform: scale(0.95);
+  }
+  .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Danger button — деструктивное действие */
+  .btn-danger {
+    background-color: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    font-weight: 500;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .btn-danger:hover {
+    background-color: rgba(255, 59, 48, 0.2);
+  }
+  .btn-danger:active {
+    transform: scale(0.95);
+  }
+
+  /* Input — поля ввода */
+  .input {
+    width: 100%;
+    background-color: #0f0f0f;
+    border: 1px solid #2d2d2d;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    transition: border-color 0.15s ease;
+    font-size: 1rem;
+  }
+  .input::placeholder {
+    color: #8e8e93;
+  }
+  .input:focus {
+    outline: none;
+    border-color: #007aff;
+  }
+
+  /* Skeleton — плейсхолдер загрузки */
+  .skeleton {
+    background-color: #2d2d2d;
+    border-radius: 0.25rem;
+    animation: skeleton 1.5s ease-in-out infinite;
+  }
+
+  /* Glass — эффект матового стекла (сохранён для совместимости) */
+  .glass {
+    background-color: #1c1c1c;
+    border: 1px solid #2d2d2d;
+    border-radius: 1rem;
+  }
+
+  .glass-strong {
+    background-color: #1c1c1c;
+    border: 1px solid #38383a;
+    border-radius: 1rem;
+  }
+
+  /* Text gradient — сохранён для совместимости */
+  .text-gradient {
+    background: linear-gradient(90deg, #007aff, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  /* Safe area для iPhone */
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
   }
-  
-  .glass-strong {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 16px);
   }
-  
-  .text-gradient {
-    @apply bg-gradient-to-r from-usnee-400 to-pink-400 bg-clip-text text-transparent;
+
+  .safe-x {
+    padding-left: max(env(safe-area-inset-left), 16px);
+    padding-right: max(env(safe-area-inset-right), 16px);
   }
-  
-  .btn-primary {
-    @apply w-full py-4 bg-gradient-to-r from-usnee-500 to-pink-600 rounded-2xl font-bold text-lg
-           disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]
-           transition-transform duration-150;
+
+  /* Скрытие скроллбара */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

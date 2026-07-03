@@ -10,15 +10,15 @@ interface TriggerOption {
 }
 
 const TRIGGERS: TriggerOption[] = [
-  { code: 'stress', label: 'Стресс', icon: Zap, color: 'bg-red-500' },
-  { code: 'boredom', label: 'Скука', icon: Coffee, color: 'bg-gray-500' },
-  { code: 'company', label: 'Компания', icon: Users, color: 'bg-blue-500' },
-  { code: 'pain', label: 'Боль', icon: Frown, color: 'bg-orange-500' },
-  { code: 'habit', label: 'Привычка', icon: Repeat, color: 'bg-purple-500' },
-  { code: 'celebration', label: 'Праздник', icon: PartyPopper, color: 'bg-yellow-500' },
-  { code: 'withdrawal', label: 'Ломка', icon: Flame, color: 'bg-amber-600' },
-  { code: 'experiment', label: 'Эксперимент', icon: FlaskConical, color: 'bg-emerald-500' },
-  { code: 'no_reason', label: 'Просто так', icon: HelpCircle, color: 'bg-slate-500' },
+  { code: 'stress', label: 'Стресс', icon: Zap, color: 'bg-tg-danger' },
+  { code: 'boredom', label: 'Скука', icon: Coffee, color: 'bg-tg-text-tertiary' },
+  { code: 'company', label: 'Компания', icon: Users, color: 'bg-tg-primary' },
+  { code: 'pain', label: 'Боль', icon: Frown, color: 'bg-tg-warning' },
+  { code: 'habit', label: 'Привычка', icon: Repeat, color: 'bg-usnee-500' },
+  { code: 'celebration', label: 'Праздник', icon: PartyPopper, color: 'bg-tg-success' },
+  { code: 'withdrawal', label: 'Ломка', icon: Flame, color: 'bg-tg-danger' },
+  { code: 'experiment', label: 'Эксперимент', icon: FlaskConical, color: 'bg-tg-success' },
+  { code: 'no_reason', label: 'Просто так', icon: HelpCircle, color: 'bg-tg-text-secondary' },
 ];
 
 interface Props {
@@ -40,14 +40,14 @@ export const TriggerSelector: React.FC<Props> = ({ selected, onSelect }) => {
             className={`
               flex flex-col items-center p-4 rounded-2xl transition-all
               ${isSelected
-                ? 'bg-white/20 ring-2 ring-white'
-                : 'bg-white/5 hover:bg-white/10'}
+                ? 'bg-tg-primary/20 ring-2 ring-tg-primary'
+                : 'bg-tg-bg-elevated border border-tg-separator hover:bg-tg-bg-secondary'}
             `}
           >
             <div className={`p-3 rounded-full ${trigger.color} mb-2`}>
               <Icon size={24} className="text-white" />
             </div>
-            <span className="text-sm text-gray-300">{trigger.label}</span>
+            <span className={`text-sm ${isSelected ? 'text-tg-text' : 'text-tg-text-secondary'}`}>{trigger.label}</span>
           </button>
         );
       })}
