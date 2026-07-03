@@ -1,1 +1,8 @@
 node_modules
+.env
+.env.local
+webbridge-req.json
+*.log
+dist
+__pycache__
+.venv
