@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Coffee, Users, Frown, Repeat, Smile, PartyPopper, Flame, FlaskConical, HelpCircle } from 'lucide-react';
+import { Zap, Coffee, Users, Frown, Repeat, PartyPopper, Flame, FlaskConical, HelpCircle } from 'lucide-react';
 import type { TriggerCode } from '@/types';
 
 interface TriggerOption {
