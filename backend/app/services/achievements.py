@@ -348,25 +348,25 @@ async def _check_diary(db: AsyncSession, user_id: int) -> bool:
 
 
 async def _grant_achievement(db: AsyncSession, user_id: int, ach_data: Dict[str, Any]) -> None:
-    """Выдача ачивки и начисление XP в рамках текущей транзакции"""
+    """Выдача ачивки и начисление XP в рамках текущей транзакции (универсально)"""
     achievement = await db.scalar(
         select(Achievement).where(Achievement.code == ach_data["code"])
     )
     if not achievement:
         return
     
-    from sqlalchemy.dialects.postgresql import insert as pg_insert
-    stmt = (
-        pg_insert(UserAchievement)
-        .values(
-            user_id=user_id,
-            achievement_id=achievement.id,
-        )
-        .on_conflict_do_nothing(
-            index_elements=["user_id", "achievement_id"]
+    # Проверяем, не получена ли уже
+    existing = await db.scalar(
+        select(UserAchievement).where(
+            UserAchievement.user_id == user_id,
+            UserAchievement.achievement_id == achievement.id,
         )
     )
-    await db.execute(stmt)
+    if existing:
+        return
+    
+    # Создаём запись
+    db.add(UserAchievement(user_id=user_id, achievement_id=achievement.id))
     
     # Начисляем XP
     if ach_data.get("xp_reward", 0) > 0:

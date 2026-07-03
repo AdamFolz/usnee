@@ -29,12 +29,13 @@ services:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       SECRET_KEY: ${SECRET_KEY}
       WEBAPP_URL: ${WEBAPP_URL}
+    ports:
+      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
-    # Не открываем порт наружу — доступ через nginx
 
   bot:
     build:

@@ -87,11 +87,19 @@ async def get_current_user_id(request: Request) -> int:
     Извлекает telegram_id из запроса (из заголовка или cookies)
     В реальном WebApp данные приходят через initData
     """
-    # Для WebApp: данные передаются в заголовке X-Telegram-Init-Data
+    # 1. Для разработки: X-Test-User-Id позволяет тестировать без Telegram
+    test_user_id = request.headers.get("X-Test-User-Id")
+    if test_user_id:
+        try:
+            return int(test_user_id)
+        except ValueError:
+            pass
+    
+    # 2. Для WebApp: данные передаются в заголовке X-Telegram-Init-Data
     init_data = request.headers.get("X-Telegram-Init-Data")
     
     if not init_data:
-        # Fallback для разработки
+        # Fallback: Bearer token (для авторизации через API)
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header[7:]

@@ -17,12 +17,12 @@ app = FastAPI(
     version="2.0.0",
 )
 
-# CORS для Telegram Mini App
+# CORS для Telegram Mini App + localhost dev
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
 )
 
@@ -39,16 +39,23 @@ async def startup():
     # Инициализация ачивок
     async with AsyncSessionLocal() as db:
         await ach_service.init_achievements(db)
-    # Установка Telegram webhook
-    await setup_webhook()
+    # Установка Telegram webhook (graceful fallback)
+    try:
+        await setup_webhook()
+    except Exception as e:
+        logger.warning(f"Webhook setup skipped (expected in dev mode): {e}")
     logger.info("USNEE API started")
 
 
 @app.on_event("shutdown")
 async def shutdown():
     logger.info("Shutting down USNEE API...")
-    await shutdown_webhook()
+    try:
+        await shutdown_webhook()
+    except Exception as e:
+        logger.warning(f"Webhook shutdown skipped: {e}")
     await close_db()
+    logger.info("USNEE API stopped")
 
 
 @app.get("/health")

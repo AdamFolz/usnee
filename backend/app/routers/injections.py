@@ -16,20 +16,17 @@ router = APIRouter(prefix="/api", tags=["injections"])
 
 
 async def get_or_create_user(db: AsyncSession, telegram_id: int) -> User:
-    from sqlalchemy.dialects.postgresql import insert as pg_insert
-    stmt = (
-        pg_insert(User)
-        .values(telegram_id=telegram_id)
-        .on_conflict_do_nothing(index_elements=["telegram_id"])
-        .returning(User)
-    )
-    result = await db.execute(stmt)
+    """Получить или создать пользователя (универсально: PostgreSQL и SQLite)"""
+    result = await db.execute(select(User).where(User.telegram_id == telegram_id))
     user = result.scalar_one_or_none()
-    if user is None:
-        result = await db.execute(select(User).where(User.telegram_id == telegram_id))
-        user = result.scalar_one_or_none()
-        if user is None:
-            raise HTTPException(500, "Race condition in user creation")
+    if user:
+        return user
+    
+    # Создаём нового
+    user = User(telegram_id=telegram_id, xp=0, level=1, is_active=True)
+    db.add(user)
+    await db.flush()
+    await db.refresh(user)
     return user
 
 

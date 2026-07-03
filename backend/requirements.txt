@@ -9,4 +9,5 @@ redis==5.0.1
 aiogram==3.4.1
 cryptography==42.0.0
 python-jose[cryptography]==3.3.0
+PyJWT==2.8.0
 httpx==0.26.0

@@ -22,9 +22,15 @@ class ApiClient {
     });
 
     this.client.interceptors.request.use((config) => {
+      // Telegram WebApp auth (production)
       const initData = window.Telegram?.WebApp?.initData;
       if (initData) {
         config.headers['X-Telegram-Init-Data'] = initData;
+      }
+      // Dev fallback — inject test user header when running outside Telegram
+      else if (import.meta.env.DEV || !window.Telegram) {
+        const testUserId = localStorage.getItem('dev_test_user_id') || '123456789';
+        config.headers['X-Test-User-Id'] = testUserId;
       }
       return config;
     });
