@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Syringe, History, Settings, Home, Heart, Wind } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 import type { TriggerCode, InjectionMethod, InjectionSite } from '@/types';
 import { useStore } from '@/stores/appStore';
 import { StatsCard } from '@/components/StatsCard';
@@ -363,6 +364,7 @@ export const App: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <Analytics />
     </div>
   );
 };
