@@ -1,12 +1,27 @@
 {
-  "$schema": "https://railway.app/railway.schema.json",
+  "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile.railway"
+    "dockerfilePath": "Dockerfile.railway",
+    "buildEnvironment": "V3"
   },
   "deploy": {
+    "runtime": "V2",
+    "numReplicas": 1,
+    "cronSchedule": "0 0 * * *",
     "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+    "overlapSeconds": 0,
+    "drainingSeconds": 0,
     "healthcheckPath": "/health",
+    "sleepApplication": false,
+    "useLegacyStacker": false,
+    "ipv6EgressEnabled": true,
+    "multiRegionConfig": {
+      "europe-west4-drams3a": {
+        "numReplicas": 1
+      }
+    },
+    "restartPolicyType": "NEVER",
     "healthcheckTimeout": 30
   }
 }
