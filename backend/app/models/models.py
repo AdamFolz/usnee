@@ -2,6 +2,7 @@ from sqlalchemy import (
     Column, Integer, String, DateTime, Numeric, ForeignKey, 
     Text, Boolean, Index, CheckConstraint, UniqueConstraint
 )
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from datetime import datetime
 from app.core.database import Base

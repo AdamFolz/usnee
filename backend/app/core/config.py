@@ -56,10 +56,13 @@ class Settings(BaseSettings):
     
     @property
     def database_url_async(self) -> str:
-        """Убеждаемся что используется async драйвер"""
-        if "asyncpg" not in self.database_url:
-            return self.database_url.replace("postgresql://", "postgresql+asyncpg://")
-        return self.database_url
+        """Убеждаемся что используется async драйвер, обрабатываем postgres:// и postgresql://"""
+        url = self.database_url
+        if "asyncpg" not in url:
+            # Railway использует postgres:// или postgresql://
+            url = url.replace("postgres://", "postgresql://")
+            url = url.replace("postgresql://", "postgresql+asyncpg://")
+        return url
 
 
 @lru_cache()
