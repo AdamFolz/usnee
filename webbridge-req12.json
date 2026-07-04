@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Подключить репозиторий') || b.textContent.includes('Connect repository')); if (btn) { btn.click(); return 'clicked Connect repo'; } return 'not found'; })()"},"session":"usnee-deploy"}

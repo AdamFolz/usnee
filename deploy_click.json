@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const btns = Array.from(document.querySelectorAll('button')); for (const b of btns) { if (b.textContent.includes('Развернуть') && b.textContent.includes('+Enter')) { b.click(); return 'clicked Deploy'; } } return 'not found'; })()"},"session":"usnee-deploy"}

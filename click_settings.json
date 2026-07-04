@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const links = Array.from(document.querySelectorAll('a, button, div[role=button]')); for (const el of links) { if (el.textContent.includes('Settings')) { el.click(); return 'clicked Settings'; } } return 'not found'; })()"},"session":"usnee-deploy"}

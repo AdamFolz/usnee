@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const el = document.elementFromPoint(500, 465); el.click(); return 'clicked at 500,465 tag=' + el.tagName + ' text=' + el.textContent.trim().slice(0,30); })()"},"session":"usnee-deploy"}

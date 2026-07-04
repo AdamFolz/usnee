@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const btns = Array.from(document.querySelectorAll('button')); for (const b of btns) { if (b.textContent.trim() === 'Отключить' || b.textContent.trim() === 'Disconnect') { b.click(); return 'clicked Disconnect'; } } return 'Disconnect not found'; })()"},"session":"usnee-deploy"}

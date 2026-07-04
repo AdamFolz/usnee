@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const cards = Array.from(document.querySelectorAll('div, a, button')); for (const el of cards) { if (el.textContent.includes('усни') && el.querySelector('svg')) { el.click(); return 'clicked usni card'; } } return 'not found'; })()"},"session":"usnee-deploy"}

@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const repo = Array.from(document.querySelectorAll('*')).find(e => e.textContent.includes('AdamFolz/usnee')); if (repo) { repo.click(); return 'clicked repo: ' + repo.tagName; } return 'repo not found'; })()"},"session":"usnee-deploy"}

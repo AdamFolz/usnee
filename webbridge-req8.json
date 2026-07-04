@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const el = document.elementFromPoint(560, 520); let target = el; while (target && target.tagName !== 'BUTTON' && target.tagName !== 'DIV') { target = target.parentElement; } if (target) { target.click(); return 'clicked ' + target.tagName; } else { el.click(); return 'clicked raw'; } })()"},"session":"usnee-deploy"}

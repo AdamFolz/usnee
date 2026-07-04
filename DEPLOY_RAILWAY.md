@@ -71,6 +71,7 @@ git push -u origin main
 | `BOT_TOKEN` | Токен от @BotFather | `123456:ABC-DEF...` |
 | `DATABASE_URL` | Railway предоставит автоматически | `postgresql+asyncpg://...` |
 | `WEBAPP_URL` | URL Mini App (см. Шаг 4) | `https://usnee.vercel.app/` |
+| `WEBHOOK_URL` | URL Railway backend (без `/api`) | `https://usnee-api.up.railway.app` |
 | `ENCRYPTION_KEY` | Сгенерировать | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
 | `SECRET_KEY` | Сгенерировать | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
 | `CORS_ORIGINS` | Разрешённые домены | `["https://*.telegram.org", "https://usnee.vercel.app"]` |

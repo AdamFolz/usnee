@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const result = document.evaluate(\"//button[contains(text(), 'AdamFolz')]\", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null); const el = result.singleNodeValue; if (el) { el.click(); return 'clicked AdamFolz btn'; } return 'not found'; })()"},"session":"usnee-deploy"}
