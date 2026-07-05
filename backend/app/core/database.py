@@ -16,6 +16,7 @@ engine = create_async_engine(
     max_overflow=30,
     pool_pre_ping=True,  # Проверяет соединение перед использованием
     pool_recycle=3600,   # Пересоздаёт соединения каждый час
+    connect_args={"timeout": 10},  # 10 секунд на подключение, чтобы не висеть бесконечно
 )
 
 # Для тестов или если SQLite не доступен
@@ -53,9 +54,13 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db():
     """Инициализация таблиц (для разработки, в production используем Alembic)"""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database initialized")
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database initialized")
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
+        raise
 
 
 async def close_db():

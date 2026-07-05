@@ -35,15 +35,25 @@ app.include_router(telegram_router)
 @app.on_event("startup")
 async def startup():
     logger.info("Starting USNEE API...")
-    await init_db()
-    # Инициализация ачивок
-    async with AsyncSessionLocal() as db:
-        await ach_service.init_achievements(db)
+    # Инициализация БД (graceful — чтобы не падать при проблемах с БД)
+    try:
+        await init_db()
+    except Exception as e:
+        logger.warning(f"Database init failed (app will continue): {e}")
+    
+    # Инициализация ачивок (graceful)
+    try:
+        async with AsyncSessionLocal() as db:
+            await ach_service.init_achievements(db)
+    except Exception as e:
+        logger.warning(f"Achievement init failed (app will continue): {e}")
+    
     # Установка Telegram webhook (graceful fallback)
     try:
         await setup_webhook()
     except Exception as e:
         logger.warning(f"Webhook setup skipped (expected in dev mode): {e}")
+    
     logger.info("USNEE API started")
 
 
