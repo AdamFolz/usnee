@@ -105,6 +105,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-tg-bg">
+      <Analytics />
       <ErrorToast message={error} onDismiss={clearError} />
       <AchievementPopup
         achievement={lastAchievement}
